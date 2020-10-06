@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './boards';
+import FuncComp from './boardWrapper';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <FuncComp />
   </React.StrictMode>,
   document.getElementById('root')
 );
