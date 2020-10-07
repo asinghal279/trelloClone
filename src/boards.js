@@ -18,6 +18,8 @@ import {
   Button,
 } from "@chakra-ui/core";
 import { AiOutlineUser } from "react-icons/ai";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import Board from "./boardComponent";
 
 export default class boards extends Component {
   constructor(props) {
@@ -112,33 +114,38 @@ export default class boards extends Component {
           <Box as={AiOutlineUser} mr={2} verticalAlign="text-bottom" />
           Personal Boards
         </Heading>
+
         <Stack spacing={3} isInline display="flex" flexWrap="wrap">
           {this.state.boards.map((board) => {
+            let path = `/board/${board.id}`;
             return (
-              <PseudoBox
-                key={board.id}
-                as="button"
-                display="flex"
-                p={2}
-                fontWeight={600}
-                fontSize="1em"
-                textAlign="left"
-                alignItems="top"
-                borderRadius={5}
-                id={board.id}
-                border="none"
-                w={200}
-                h={100}
-                cursor="pointer"
-                color="white"
-                mt={3}
-                bg="#0567a2"
-                _hover={{ bg: "#065a8e" }}
-              >
-                {board.name}
-              </PseudoBox>
+              <Link to={path}>
+                <PseudoBox
+                  key={board.id}
+                  as="button"
+                  display="flex"
+                  p={2}
+                  fontWeight={600}
+                  fontSize="1em"
+                  textAlign="left"
+                  alignItems="top"
+                  borderRadius={5}
+                  id={board.id}
+                  border="none"
+                  w={200}
+                  h={100}
+                  cursor="pointer"
+                  color="white"
+                  mt={3}
+                  bg="#0567a2"
+                  _hover={{ bg: "#065a8e" }}
+                >
+                  {board.name}
+                </PseudoBox>
+              </Link>
             );
           })}
+
           <PseudoBox
             as="button"
             display="flex"
