@@ -88,7 +88,13 @@ export default class boards extends Component {
               </ModalBody>
 
               <ModalFooter>
-                <Button mr={3} type="submit" cursor="pointer" border="none" onClick={this.submitNewBoard}>
+                <Button
+                  mr={3}
+                  type="submit"
+                  cursor="pointer"
+                  border="none"
+                  onClick={this.submitNewBoard}
+                >
                   Create Board
                 </Button>
               </ModalFooter>
