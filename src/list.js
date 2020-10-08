@@ -131,6 +131,7 @@ class List extends Component {
         </Stack>
         <form>
           <FormControl
+            onSubmit={this.submitNewCard}
             display={this.state.showAddCardForm ? "block" : "none"}
             mt={2}
           >
@@ -143,6 +144,7 @@ class List extends Component {
               boxShadow="0 1px 0 rgba(9,30,66,.25)"
               value={this.state.newCard}
               onChange={this.handleInputChange}
+              isRequired="true"
             />
             <ButtonGroup spacing={4} mt={2}>
               <Button
@@ -155,7 +157,6 @@ class List extends Component {
                 size="sm"
                 _hover={{ bg: "#61bd4f" }}
                 variant="solid"
-                onClick={this.submitNewCard}
               >
                 Add Card
               </Button>

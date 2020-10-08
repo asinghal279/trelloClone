@@ -2,21 +2,16 @@ import React, { Component } from "react";
 import {
   Stack,
   Box,
-  Heading,
-  PseudoBox,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
   FormControl,
   FormLabel,
   Input,
   Button,
   ThemeProvider,
   CSSReset,
+  ButtonGroup,
+  Textarea,
+  IconButton,
+  Flex,
 } from "@chakra-ui/core";
 import Axios from "axios";
 import List from "./list";
@@ -29,6 +24,9 @@ export class BoardComponent extends Component {
       boardName: this.props.location.state.name,
       lists: [],
       disabled: true,
+      showAddListForm: false,
+      showAddListButton: true,
+      newListName: "",
     };
     this.key = `9cb0af8bad58725f09508dd5aace64a5`;
     this.token = `30b80c5d0950b7ee2663d550683fab28f2d67e1a6ccace739a7ba1e74113bdd9`;
@@ -59,6 +57,12 @@ export class BoardComponent extends Component {
     });
   };
 
+  handleInputChange = (e) => {
+    this.setState({
+      [e.target.id]: e.target.value,
+    });
+  };
+
   handleBlur = () => {
     this.setState({
       disabled: true,
@@ -77,6 +81,28 @@ export class BoardComponent extends Component {
       });
   };
 
+  submitNewList = (e) => {
+    e.preventDefault();
+    Axios.post(
+      `https://api.trello.com/1/lists?key=${this.key}&token=${this.token}&name=${this.state.newListName}&idBoard=${this.props.match.params.boardId}`,
+      {
+        pos: "bottom",
+      }
+    )
+      .then((response) => {
+        console.log(response);
+        this.setState({
+          showAddCardButton: true,
+          showAddCardForm: false,
+          newListName: "",
+        });
+        this.getlists();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   componentDidMount() {
     this.getlists();
   }
@@ -84,7 +110,7 @@ export class BoardComponent extends Component {
   render() {
     console.log(this.props.match.params);
     return (
-        <React.Fragment>
+      <React.Fragment>
         <Box bg="#0079bf">
           <FormControl w="20%" h="100%" p={2}>
             <Input
@@ -105,12 +131,86 @@ export class BoardComponent extends Component {
             />
           </FormControl>
         </Box>
-        <Stack isInline>
+        <Flex
+          overflow="auto"
+          display="-webkit-box"
+          h="-webkit-fill-available"
+        >
           {this.state.lists.map((list) => (
             <List key={list.id} id={list.id} name={list.name}></List>
           ))}
-        </Stack>
-        </React.Fragment>
+          <form>
+            <FormControl
+              onSubmit={this.submitNewList}
+              display={this.state.showAddListForm ? "block" : "none"}
+              w={280}
+              m={3}
+            >
+              <Textarea
+                placeholder="Enter list title..."
+                borderRadius={5}
+                resize="none"
+                p="6px 8px 2px"
+                id="newListName"
+                boxShadow="0 1px 0 rgba(9,30,66,.25)"
+                value={this.state.newListName}
+                onChange={this.handleInputChange}
+                isRequired="true"
+              />
+              <ButtonGroup spacing={4} mt={2}>
+                <Button
+                  bg="#5aac44"
+                  type="submit"
+                  color="white"
+                  type="submit"
+                  fontWeight="300"
+                  id="newCardInput"
+                  size="sm"
+                  _hover={{ bg: "#61bd4f" }}
+                  variant="solid"
+                  onClick={this.submitNewList}
+                >
+                  Add List
+                </Button>
+                <IconButton
+                  border="none"
+                  color="grey"
+                  bg="transparent"
+                  fontSize={16}
+                  icon="close"
+                  _hover={{ color: "black" }}
+                  size="sm"
+                  onClick={() => {
+                    this.setState({
+                      showAddListButton: true,
+                      showAddListForm: false,
+                    });
+                  }}
+                />
+              </ButtonGroup>
+            </FormControl>
+            <Button
+              size="xs"
+              w={280}
+              size="md"
+              m={3}
+              border="none"
+              fontWeight="300"
+              color="#747f94"
+              textAlign="left"
+              onClick={() => {
+                this.setState({
+                  showAddListForm: true,
+                  showAddListButton: false,
+                });
+              }}
+              display={this.state.showAddListButton ? "block" : "none"}
+            >
+              + Add a list
+            </Button>
+          </form>
+        </Flex>
+      </React.Fragment>
     );
   }
 }
