@@ -19,7 +19,6 @@ import {
 } from "@chakra-ui/core";
 import { AiOutlineUser } from "react-icons/ai";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import Board from "./boardComponent";
 
 export default class boards extends Component {
   constructor(props) {
@@ -107,11 +106,12 @@ export default class boards extends Component {
           as="h4"
           color="#172b4d"
           fontSize="1.2em"
+          my={4}
           w="100%"
           size="md"
           textAlign="left"
         >
-          <Box as={AiOutlineUser} mr={2} verticalAlign="text-bottom" />
+          <Box as={AiOutlineUser} mr={2} verticalAlign="text-bottom" display="inline"/>
           Personal Boards
         </Heading>
 
@@ -130,6 +130,7 @@ export default class boards extends Component {
                   as="button"
                   display="flex"
                   p={2}
+                  mx={2}
                   fontWeight={600}
                   fontSize="1em"
                   textAlign="left"
@@ -156,6 +157,7 @@ export default class boards extends Component {
             display="flex"
             mt={3}
             p={2}
+            mx={2}
             fontSize="0.8em"
             textAlign="center"
             alignItems="center"

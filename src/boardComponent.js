@@ -15,6 +15,8 @@ import {
   FormLabel,
   Input,
   Button,
+  ThemeProvider,
+  CSSReset,
 } from "@chakra-ui/core";
 import Axios from "axios";
 import List from "./list";
@@ -26,7 +28,7 @@ export class BoardComponent extends Component {
     this.state = {
       boardName: this.props.location.state.name,
       lists: [],
-      disabled : true
+      disabled: true,
     };
     this.key = `9cb0af8bad58725f09508dd5aace64a5`;
     this.token = `30b80c5d0950b7ee2663d550683fab28f2d67e1a6ccace739a7ba1e74113bdd9`;
@@ -51,18 +53,29 @@ export class BoardComponent extends Component {
     });
   };
 
-  enableInput =() => {
-      this.setState({
-          disabled:false,
-      })
-  }
+  enableInput = () => {
+    this.setState({
+      disabled: false,
+    });
+  };
 
   handleBlur = () => {
     this.setState({
-        disabled:true
-    })
-  }
-
+      disabled: true,
+    });
+    Axios.put(
+      `https://api.trello.com/1/boards/${this.props.match.params.boardId}?key=${this.key}&token=${this.token}`,
+      {
+        name: this.state.boardName,
+      }
+    )
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   componentDidMount() {
     this.getlists();
@@ -71,8 +84,8 @@ export class BoardComponent extends Component {
   render() {
     console.log(this.props.match.params);
     return (
-      <Box>
-        <Box h={40} bg="blue">
+        <React.Fragment>
+        <Box bg="#0079bf">
           <FormControl w="20%" h="100%" p={2}>
             <Input
               placeholder="Add Board Title"
@@ -80,14 +93,15 @@ export class BoardComponent extends Component {
               onChange={this.handleBoardName}
               onClick={this.enableInput}
               value={this.state.boardName}
+              border="none"
               _disabled={this.state.disabled ? "disabled" : null}
               color="white"
-              bg="transparent"
+              bg={this.state.disabled ? "transparent" : "#ffffff4d"}
               size={25}
               fontSize={24}
               fontWeight={900}
               pl={1}
-              onBlur = {this.handleBlur}
+              onBlur={this.handleBlur}
             />
           </FormControl>
         </Box>
@@ -96,7 +110,7 @@ export class BoardComponent extends Component {
             <List key={list.id} id={list.id} name={list.name}></List>
           ))}
         </Stack>
-      </Box>
+        </React.Fragment>
     );
   }
 }
