@@ -13,7 +13,6 @@ import {
   ModalBody,
   ModalCloseButton,
   FormControl,
-  FormLabel,
   Input,
   Button,
 } from "@chakra-ui/core";

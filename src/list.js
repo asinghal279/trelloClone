@@ -3,11 +3,8 @@ import {
   Button,
   ButtonGroup,
   FormControl,
-  Heading,
   Input,
   Stack,
-  ThemeProvider,
-  Icon,
   IconButton,
   Textarea,
 } from "@chakra-ui/core";
@@ -124,6 +121,7 @@ class List extends Component {
               fontSize={16}
               boxShadow="0 1px 0 rgba(9,30,66,.25)"
               cursor="pointer"
+              onClick={this.props.openModal}
             >
               {card.name}
             </Box>
