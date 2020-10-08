@@ -1,11 +1,15 @@
 import {
   Box,
   Button,
+  ButtonGroup,
   FormControl,
   Heading,
   Input,
   Stack,
   ThemeProvider,
+  Icon,
+  IconButton,
+  Textarea,
 } from "@chakra-ui/core";
 import Axios from "axios";
 import React, { Component } from "react";
@@ -18,6 +22,9 @@ class List extends Component {
       cards: [],
       listName: this.props.name,
       listDisabled: true,
+      showAddCardForm: false,
+      showAddCardButton: true,
+      newCard: "",
     };
     this.key = `9cb0af8bad58725f09508dd5aace64a5`;
     this.token = `30b80c5d0950b7ee2663d550683fab28f2d67e1a6ccace739a7ba1e74113bdd9`;
@@ -39,9 +46,9 @@ class List extends Component {
     this.getCards();
   }
 
-  handleListNameChange = (e) => {
+  handleInputChange = (e) => {
     this.setState({
-      listName: e.target.value,
+      [e.target.id]: e.target.value,
     });
   };
 
@@ -60,6 +67,28 @@ class List extends Component {
       });
   };
 
+  submitNewCard = (e) => {
+    e.preventDefault();
+    Axios.post(
+      `https://api.trello.com/1/cards?key=${this.key}&token=${this.token}&idList=${this.props.id}`,
+      {
+        name: this.state.newCard,
+      }
+    )
+      .then((response) => {
+        console.log(response);
+        this.setState({
+          showAddCardButton:true,
+          showAddCardForm:false,
+          newCard: "",
+        })
+        this.getCards();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   render() {
     return (
       <Box
@@ -67,7 +96,7 @@ class List extends Component {
         bg="#ebecf0"
         borderRadius={10}
         m={3}
-        p={1}
+        p={2}
         pt={1}
         pb={2}
         h="fit-content"
@@ -81,7 +110,8 @@ class List extends Component {
           bg="transparent"
           border="none"
           fontSize={18}
-          onChange={this.handleListNameChange}
+          id="listName"
+          onChange={this.handleInputChange}
           onBlur={this.submitListNameChange}
         />
         <Stack>
@@ -99,11 +129,54 @@ class List extends Component {
             </Box>
           ))}
         </Stack>
-        {/* <form>
-          <FormControl>
-            <Input placeholder="Add new Card"></Input>
+        <form>
+          <FormControl
+            display={this.state.showAddCardForm ? "block" : "none"}
+            mt={2}
+          >
+            <Textarea
+              placeholder="Enter a title for this card..."
+              borderRadius={5}
+              resize="none"
+              p="6px 8px 2px"
+              id="newCard"
+              boxShadow="0 1px 0 rgba(9,30,66,.25)"
+              value={this.state.newCard}
+              onChange={this.handleInputChange}
+            />
+            <ButtonGroup spacing={4} mt={2}>
+              <Button
+                bg="#5aac44"
+                type="submit"
+                color="white"
+                type="submit"
+                fontWeight="300"
+                id="newCardInput"
+                size="sm"
+                _hover={{ bg: "#61bd4f" }}
+                variant="solid"
+                onClick={this.submitNewCard}
+              >
+                Add Card
+              </Button>
+              <IconButton
+                border="none"
+                color="grey"
+                bg="transparent"
+                fontSize={16}
+                icon="close"
+                _hover={{ color: "black" }}
+                size="sm"
+                onClick={() => {
+                  this.setState({
+                    showAddCardButton: true,
+                    showAddCardForm: false,
+                  });
+                }}
+              />
+            </ButtonGroup>
           </FormControl>
-        </form> */}
+        </form>
         <Button
           size="xs"
           w="100%"
@@ -112,6 +185,10 @@ class List extends Component {
           fontWeight="300"
           color="#747f94"
           textAlign="left"
+          onClick={() => {
+            this.setState({ showAddCardForm: true, showAddCardButton: false });
+          }}
+          display={this.state.showAddCardButton ? "block" : "none"}
         >
           + Add a card
         </Button>
