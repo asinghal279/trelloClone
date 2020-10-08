@@ -119,7 +119,12 @@ export default class boards extends Component {
           {this.state.boards.map((board) => {
             let path = `/board/${board.id}`;
             return (
-              <Link to={path}>
+              <Link to={{
+                pathname: path,
+                state:{
+                  name: board.name,
+                }
+              }}>
                 <PseudoBox
                   key={board.id}
                   as="button"

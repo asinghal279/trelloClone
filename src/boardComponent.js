@@ -24,7 +24,7 @@ export class BoardComponent extends Component {
     super(props);
 
     this.state = {
-      boardName: "World Of Webseries",
+      boardName: this.props.location.state.name,
       lists: [],
       disabled : true
     };
