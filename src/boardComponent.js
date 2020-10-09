@@ -11,10 +11,7 @@ import {
 } from "@chakra-ui/core";
 import Axios from "axios";
 import List from "./list";
-import CardModal from './card';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-
-
+import CardModal from "./card";
 
 export class BoardComponent extends Component {
   constructor(props) {
@@ -28,7 +25,7 @@ export class BoardComponent extends Component {
       showAddListButton: true,
       newListName: "",
       isOpen: false,
-      selectedCardId:"",
+      selectedCardId: "",
     };
     this.key = `9cb0af8bad58725f09508dd5aace64a5`;
     this.token = `30b80c5d0950b7ee2663d550683fab28f2d67e1a6ccace739a7ba1e74113bdd9`;
@@ -36,7 +33,6 @@ export class BoardComponent extends Component {
 
   onOpen = () => this.setState({ isOpen: true });
   onClose = () => this.setState({ isOpen: false });
-
 
   getlists = () => {
     Axios.get(
@@ -49,6 +45,7 @@ export class BoardComponent extends Component {
       })
       .catch((err) => console.log(err));
   };
+
 
   handleBoardName = (e) => {
     this.setState({
@@ -116,7 +113,7 @@ export class BoardComponent extends Component {
     // console.log(this.props.match.params);
     return (
       <React.Fragment>
-        <CardModal open={this.state.isOpen} close={this.onClose}/>
+        <CardModal open={this.state.isOpen} close={this.onClose} cardId={this.state.selectedCardId}/>
         <Box bg="#0079bf">
           <FormControl w="20%" h="100%" p={2}>
             <Input
@@ -143,7 +140,13 @@ export class BoardComponent extends Component {
               key={list.id}
               id={list.id}
               name={list.name}
-              openModal={this.onOpen}
+              openModal={async(cardId) => {
+                // this.onOpen();
+                await this.setState({
+                  selectedCardId: cardId,
+                  isOpen:true,
+                })
+              }}
             ></List>
           ))}
           <form onSubmit={this.submitNewList}>

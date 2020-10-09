@@ -28,23 +28,34 @@ class cardModal extends Component {
     this.token = `30b80c5d0950b7ee2663d550683fab28f2d67e1a6ccace739a7ba1e74113bdd9`;
   }
 
-//   getCard = () => {
-//     Axios.get(
-//         `https://api.trello.com/1/cards/${this.props.cardId}?key=${this.key}&token=${this.token}`
-//       )
-//         .then((res) => {
-//         //   const name = res.data;
-//         //   this.setState({ name });
-//           console.log(res.data);
-//         })
-//         .catch((err) => console.log(err));
-//   }
+  getCard = () => {
+    // console.log(this.state.selectedCardId);
+    Axios.get(
+      `https://api.trello.com/1/cards/${this.props.cardId}?key=${this.key}&token=${this.token}`
+    )
+      .then((res) => {
+        //   const name = res.data;
+        //   this.setState({ name });
+        console.log(res.data);
+      })
+      .catch((err) => console.log(err));
+  };
 
-  
-  
+  handleOpenModal = (bool) => {
+    if (bool) {
+      this.getCard();
+      return true;
+    }
+    return false;
+  };
+
   render() {
     return (
-      <Modal isOpen={this.props.open} onClose={this.props.close} size="xl">
+      <Modal
+        isOpen={this.handleOpenModal(this.props.open)}
+        onClose={this.props.close}
+        size="xl"
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>
@@ -59,7 +70,7 @@ class cardModal extends Component {
                 <Input
                   placeholder="Enter amount"
                   border="none"
-                //   value={this.state.selectedCardName}
+                  //   value={this.state.selectedCardName}
                 />
               </InputGroup>
               <ModalCloseButton />

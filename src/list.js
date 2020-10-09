@@ -10,7 +10,6 @@ import {
 } from "@chakra-ui/core";
 import Axios from "axios";
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 
 class List extends Component {
@@ -123,7 +122,9 @@ class List extends Component {
               fontSize={16}
               boxShadow="0 1px 0 rgba(9,30,66,.25)"
               cursor="pointer"
-              onClick={this.props.openModal}
+              onClick={() => {
+                console.log(card.id)  
+                this.props.openModal(card.id)}}
             >
               {card.name}
             </Box>
