@@ -140,9 +140,9 @@ export class BoardComponent extends Component {
               key={list.id}
               id={list.id}
               name={list.name}
-              openModal={async(cardId) => {
+              openModal={(cardId) => {
                 // this.onOpen();
-                await this.setState({
+                this.setState({
                   selectedCardId: cardId,
                   isOpen:true,
                 })
