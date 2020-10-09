@@ -7,21 +7,14 @@ import {
   ButtonGroup,
   Textarea,
   IconButton,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
   Flex,
-  Icon,
-  InputGroup,
-  InputLeftAddon,
 } from "@chakra-ui/core";
 import Axios from "axios";
 import List from "./list";
-import { BsWindow } from "react-icons/bs";
+import CardModal from './card';
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+
+
 
 export class BoardComponent extends Component {
   constructor(props) {
@@ -34,7 +27,8 @@ export class BoardComponent extends Component {
       showAddListForm: false,
       showAddListButton: true,
       newListName: "",
-      isOpen: true,
+      isOpen: false,
+      selectedCardId:"",
     };
     this.key = `9cb0af8bad58725f09508dd5aace64a5`;
     this.token = `30b80c5d0950b7ee2663d550683fab28f2d67e1a6ccace739a7ba1e74113bdd9`;
@@ -42,6 +36,7 @@ export class BoardComponent extends Component {
 
   onOpen = () => this.setState({ isOpen: true });
   onClose = () => this.setState({ isOpen: false });
+
 
   getlists = () => {
     Axios.get(
@@ -118,37 +113,10 @@ export class BoardComponent extends Component {
   }
 
   render() {
-    console.log(this.props.match.params);
+    // console.log(this.props.match.params);
     return (
       <React.Fragment>
-        <Modal isOpen={this.state.isOpen} onClose={this.onClose} size="xl">
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>
-              <Flex justifyContent="space-between">
-                <InputGroup>
-                  <InputLeftAddon
-                    fontSize="1.4em"
-                    bg="transparent"
-                    border="none"
-                    children={<Icon as={BsWindow} color="#42526e" mt={2} />}
-                  />
-                  <Input
-                    placeholder="Enter amount"
-                    border="none"
-                    value={this.state.selectedCardName}
-                  />
-                </InputGroup>
-                <ModalCloseButton />
-              </Flex>
-            </ModalHeader>
-
-            <ModalBody></ModalBody>
-            <ModalFooter>
-              <Button>Close</Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+        <CardModal open={this.state.isOpen} close={this.onClose}/>
         <Box bg="#0079bf">
           <FormControl w="20%" h="100%" p={2}>
             <Input
@@ -175,14 +143,11 @@ export class BoardComponent extends Component {
               key={list.id}
               id={list.id}
               name={list.name}
-              openModal={() => {
-                this.onOpen();
-              }}
+              openModal={this.onOpen}
             ></List>
           ))}
-          <form>
+          <form onSubmit={this.submitNewList}>
             <FormControl
-              onSubmit={this.submitNewList}
               display={this.state.showAddListForm ? "block" : "none"}
               w={280}
               m={3}

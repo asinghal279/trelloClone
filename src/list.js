@@ -10,6 +10,8 @@ import {
 } from "@chakra-ui/core";
 import Axios from "axios";
 import React, { Component } from "react";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+
 
 class List extends Component {
   constructor(props) {
@@ -75,10 +77,10 @@ class List extends Component {
       .then((response) => {
         console.log(response);
         this.setState({
-          showAddCardButton:true,
-          showAddCardForm:false,
+          showAddCardButton: true,
+          showAddCardForm: false,
           newCard: "",
-        })
+        });
         this.getCards();
       })
       .catch((err) => {
@@ -127,9 +129,9 @@ class List extends Component {
             </Box>
           ))}
         </Stack>
-        <form>
+
+        <form onSubmit={this.submitNewCard}>
           <FormControl
-            onSubmit={this.submitNewCard}
             display={this.state.showAddCardForm ? "block" : "none"}
             mt={2}
           >
