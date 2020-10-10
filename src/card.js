@@ -138,7 +138,6 @@ class cardModal extends Component {
       });
   };
 
-
   deleteChecklist = (checklistId) => {
     Axios.delete(
       `https://api.trello.com/1/checklists/${checklistId}?key=${this.key}&token=${this.token}`
@@ -154,8 +153,38 @@ class cardModal extends Component {
       .catch((err) => {
         console.log(err);
       });
-  }
+  };
 
+  deleteChecklistItem = (checklistId, itemId) => {
+    Axios.delete(
+      `https://api.trello.com/1/checklists/${checklistId}/checkItems/${itemId}?key=${this.key}&token=${this.token}`
+    )
+      .then((response) => {
+        console.log(response);
+        this.getChecklists();
+        this.setState({
+          newChecklistItem: "",
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  updateChecklistItemState = (checklistId, itemId, state) => {
+    Axios.put(
+      `https://api.trello.com/1/cards/${this.props.cardId}/checklist/${checklistId}/checkItem/${itemId}?key=${this.key}&token=${this.token}`,
+      {
+        state: state,
+      }
+    )
+      .then((response) => {
+        this.getChecklists();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   render() {
     return (
       <Modal
@@ -284,22 +313,82 @@ class cardModal extends Component {
                             </Button>
                           </PopoverTrigger>
                           <PopoverContent zIndex={4}>
-                            <PopoverHeader fontSize={16} textAlign="center" fontWeight={300}>Delete Checklist?</PopoverHeader>
+                            <PopoverHeader
+                              fontSize={16}
+                              textAlign="center"
+                              fontWeight={300}
+                            >
+                              Delete Checklist?
+                            </PopoverHeader>
                             <PopoverCloseButton />
                             <PopoverBody fontSize={16} fontWeight={300}>
                               Deleting a checklist is permanent and there is no
                               way to get it back.
                             </PopoverBody>
                             <PopoverFooter>
-                              <Button variantColor="red" w="100%" size="sm" onClick={() => this.deleteChecklist(checklist.id)}>Button</Button>
+                              <Button
+                                variantColor="red"
+                                w="100%"
+                                size="sm"
+                                onClick={() =>
+                                  this.deleteChecklist(checklist.id)
+                                }
+                              >
+                                Button
+                              </Button>
                             </PopoverFooter>
                           </PopoverContent>
                         </Popover>
                       </Flex>
-                      <Progress value={80} borderRadius={20} mt={2} />
+                      <Progress
+                        value={
+                          (checklist.checkItems.filter(
+                            (item) => item.state === "complete"
+                          ).length /
+                            checklist.checkItems.length) *
+                          100
+                        }
+                        borderRadius={20}
+                        mt={2}
+                      />
                       <Stack name="checklist-item-container" mt="sm">
                         {checklist.checkItems.map((item) => (
-                          <Checkbox mt={3}>{item.name}</Checkbox>
+                          <Flex justify="space-between" mt={3}>
+                            <Checkbox
+                              isChecked={
+                                item.state === "complete" ? true : false
+                              }
+                              onChange={async () => {
+                                await this.setState({
+                                  currentIsChecked:
+                                    item.state === "complete" ? false : true,
+                                });
+                                await this.updateChecklistItemState(
+                                  item.idChecklist,
+                                  item.id,
+                                  this.state.currentIsChecked
+                                    ? "complete"
+                                    : "incomplete"
+                                );
+                              }}
+                            >
+                              <Text as={item.state==="complete" ? "del" : ""}>{item.name}</Text>
+                            </Checkbox>
+                            <IconButton
+                              variantColor="#42526e"
+                              variant="outline"
+                              size="xs"
+                              fontSize="12px"
+                              border="none"
+                              icon="delete"
+                              onClick={() =>
+                                this.deleteChecklistItem(
+                                  item.idChecklist,
+                                  item.id
+                                )
+                              }
+                            />
+                          </Flex>
                         ))}
                         <form onSubmit={this.addChecklistItem}>
                           <FormControl
