@@ -31,6 +31,7 @@ import {
   PopoverBody,
   PopoverFooter,
   PopoverCloseButton,
+  FormLabel,
 } from "@chakra-ui/core";
 import { BsWindow, BsCardText } from "react-icons/bs";
 import Axios from "axios";
@@ -47,6 +48,7 @@ class cardModal extends Component {
       checklists: [],
       newChecklistItem: "",
       showAddChecklistItemForm: false,
+      addChecklist: "",
     };
     this.key = `9cb0af8bad58725f09508dd5aace64a5`;
     this.token = `30b80c5d0950b7ee2663d550683fab28f2d67e1a6ccace739a7ba1e74113bdd9`;
@@ -185,6 +187,27 @@ class cardModal extends Component {
         console.log(err);
       });
   };
+
+  addChecklist = (e) => {
+    e.preventDefault();
+    Axios.post(
+      `https://api.trello.com/1/checklists?key=${this.key}&token=${this.token}&idCard=${this.props.cardId}`,
+      {
+        name: this.state.addChecklist,
+      }
+    )
+      .then((response) => {
+        console.log(response);
+        this.getChecklists();
+        this.setState({
+          newChecklistItem: "",
+          addChecklist: "",
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   render() {
     return (
       <Modal
@@ -216,7 +239,7 @@ class cardModal extends Component {
               </InputGroup>
               <ModalCloseButton />
             </Flex>
-            <Flex flexDirection="row" mt={5}>
+            <Flex flexDirection="row" justify="space-between" mt={5}>
               <Box w="60%">
                 <Heading size="md">
                   <Icon
@@ -348,6 +371,13 @@ class cardModal extends Component {
                             checklist.checkItems.length) *
                           100
                         }
+                        color={
+                          (checklist.checkItems.filter(
+                            (item) => item.state === "complete"
+                          ).length /
+                            checklist.checkItems.length) *
+                          100 === 100 ? "green" : "blue"
+                        }
                         borderRadius={20}
                         mt={2}
                       />
@@ -372,7 +402,9 @@ class cardModal extends Component {
                                 );
                               }}
                             >
-                              <Text as={item.state==="complete" ? "del" : ""}>{item.name}</Text>
+                              <Text as={item.state === "complete" ? "del" : ""}>
+                                {item.name}
+                              </Text>
                             </Checkbox>
                             <IconButton
                               variantColor="#42526e"
@@ -416,7 +448,6 @@ class cardModal extends Component {
                                 bg="#5aac44"
                                 type="submit"
                                 color="white"
-                                type="submit"
                                 fontWeight="300"
                                 id="checklistItemInput"
                                 size="sm"
@@ -468,7 +499,49 @@ class cardModal extends Component {
                   ))}
                 </Stack>
               </Box>
-              <Box></Box>
+              <Box w="35%">
+                <Popover>
+                  <PopoverTrigger>
+                    <Button w="100%" fontSize={16}>
+                      + Add Checklist
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent zIndex={10}>
+                    <PopoverArrow />
+                    <PopoverHeader textAlign="center" fontSize={16}>
+                      Add Checklist
+                    </PopoverHeader>
+                    <PopoverCloseButton />
+                    <PopoverBody>
+                      <form onSubmit={this.addChecklist}>
+                        <FormControl>
+                          <FormLabel fontSize={16}>Title</FormLabel>
+                          <Input
+                            id="addChecklist"
+                            value={this.state.addChecklist}
+                            onChange={this.handleInputChange}
+                          />
+                        </FormControl>
+                        <Button
+                          type="submit"
+                          bg="#5aac44"
+                          type="submit"
+                          color="white"
+                          mt={3}
+                          fontWeight="300"
+                          id="checklistItemInput"
+                          size="sm"
+                          _hover={{ bg: "#61bd4f" }}
+                          variant="solid"
+                          fontSize={16}
+                        >
+                          Add
+                        </Button>
+                      </form>
+                    </PopoverBody>
+                  </PopoverContent>
+                </Popover>
+              </Box>
             </Flex>
           </ModalHeader>
 
