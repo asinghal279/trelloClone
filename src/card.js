@@ -208,6 +208,24 @@ class cardModal extends Component {
         console.log(err);
       });
   };
+
+  deleteCard = () => {
+    Axios.delete(
+      `https://api.trello.com/1/cards/${this.props.cardId}?key=${this.key}&token=${this.token}`
+    )
+      .then((response) => {
+        console.log(response);
+        this.props.getLists();
+        this.setState({
+          open: false,
+          newChecklistItem: "",
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   render() {
     return (
       <Modal
@@ -376,7 +394,10 @@ class cardModal extends Component {
                             (item) => item.state === "complete"
                           ).length /
                             checklist.checkItems.length) *
-                          100 === 100 ? "green" : "blue"
+                            100 ===
+                          100
+                            ? "green"
+                            : "blue"
                         }
                         borderRadius={20}
                         mt={2}
@@ -502,7 +523,7 @@ class cardModal extends Component {
               <Box w="35%">
                 <Popover>
                   <PopoverTrigger>
-                    <Button w="100%" fontSize={16}>
+                    <Button w="100%" mb={2} fontSize={16}>
                       + Add Checklist
                     </Button>
                   </PopoverTrigger>
@@ -539,6 +560,35 @@ class cardModal extends Component {
                         </Button>
                       </form>
                     </PopoverBody>
+                  </PopoverContent>
+                </Popover>
+
+                <Popover placement="bottom-start" trigger="hover">
+                  <PopoverTrigger>
+                    <Button w="100%" fontSize={16}>
+                      Delete Card
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent zIndex={4}>
+                    <PopoverHeader
+                      fontSize={16}
+                      textAlign="center"
+                      fontWeight={300}
+                      color="#0567a2"
+                    >
+                      Delete Card?
+                    </PopoverHeader>
+                    <PopoverCloseButton />
+                    <PopoverFooter>
+                      <Button
+                        variantColor="red"
+                        w="100%"
+                        size="sm"
+                        onClick={this.deleteCard}
+                      >
+                        Delete
+                      </Button>
+                    </PopoverFooter>
                   </PopoverContent>
                 </Popover>
               </Box>

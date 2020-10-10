@@ -7,10 +7,18 @@ import {
   Stack,
   IconButton,
   Textarea,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverArrow,
+  PopoverHeader,
+  PopoverBody,
+  PopoverFooter,
+  PopoverCloseButton,
+  Flex,
 } from "@chakra-ui/core";
 import Axios from "axios";
 import React, { Component } from "react";
-
 
 class List extends Component {
   constructor(props) {
@@ -87,6 +95,22 @@ class List extends Component {
       });
   };
 
+  archiveList = () => {
+    Axios.put(
+      `https://api.trello.com/1/lists/${this.props.id}/closed?key=${this.key}&token=${this.token}`,
+      {
+        value: true,
+      }
+    )
+      .then((response) => {
+        this.props.getLists();
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   render() {
     return (
       <Box
@@ -99,19 +123,53 @@ class List extends Component {
         pb={2}
         h="fit-content"
       >
-        <Input
-          size="sm"
-          mb={2}
-          p="10px"
-          value={this.state.listName}
-          borderRadius={2}
-          bg="transparent"
-          border="none"
-          fontSize={18}
-          id="listName"
-          onChange={this.handleInputChange}
-          onBlur={this.submitListNameChange}
-        />
+        <Flex>
+          <Input
+            size="sm"
+            mb={2}
+            p="10px"
+            value={this.state.listName}
+            borderRadius={2}
+            bg="transparent"
+            border="none"
+            fontSize={18}
+            id="listName"
+            onChange={this.handleInputChange}
+            onBlur={this.submitListNameChange}
+          />
+          <Popover placement="bottom-start" trigger="hover">
+            <PopoverTrigger>
+              <IconButton
+                bg="transparent"
+                icon="drag-handle"
+                size="22px"
+                color="black"
+                _focus={{ bg: "transparent" }}
+              />
+            </PopoverTrigger>
+            <PopoverContent zIndex={4}>
+              <PopoverHeader
+                fontSize={16}
+                textAlign="center"
+                fontWeight={300}
+                color="#0567a2"
+              >
+                Delete List?
+              </PopoverHeader>
+              <PopoverCloseButton />
+              <PopoverFooter>
+                <Button
+                  variantColor="red"
+                  w="100%"
+                  size="sm"
+                  onClick={this.archiveList}
+                >
+                  Delete
+                </Button>
+              </PopoverFooter>
+            </PopoverContent>
+          </Popover>
+        </Flex>
         <Stack>
           {this.state.cards.map((card) => (
             <Box
@@ -123,8 +181,9 @@ class List extends Component {
               boxShadow="0 1px 0 rgba(9,30,66,.25)"
               cursor="pointer"
               onClick={() => {
-                console.log(card.id)  
-                this.props.openModal(card.id)}}
+                console.log(card.id);
+                this.props.openModal(card.id);
+              }}
             >
               {card.name}
             </Box>

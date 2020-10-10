@@ -112,8 +112,6 @@ export class BoardComponent extends Component {
     if (this.props.match.params.boardId !== prevProps.match.params.boardId) {
       this.setState({ boardName: this.props.location.state.name });
       this.getlists();
-
-      // or any other logic..
     }
   }
 
@@ -125,6 +123,7 @@ export class BoardComponent extends Component {
           open={this.state.isOpen}
           close={this.onClose}
           cardId={this.state.selectedCardId}
+          getLists = {() => this.getlists()}
         />
         <Box bg="#0079bf">
           <FormControl w="20%" h="100%" p={2}>
@@ -159,6 +158,7 @@ export class BoardComponent extends Component {
                   isOpen: true,
                 });
               }}
+              getLists={() => this.getlists()}
             ></List>
           ))}
           <form onSubmit={this.submitNewList}>

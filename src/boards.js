@@ -15,9 +15,21 @@ import {
   FormControl,
   Input,
   Button,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverArrow,
+  PopoverHeader,
+  PopoverBody,
+  PopoverFooter,
+  PopoverCloseButton,
+  Icon,
+  IconButton,
+  Tooltip,
 } from "@chakra-ui/core";
 import { AiOutlineUser } from "react-icons/ai";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import Axios from "axios";
 
 export default class boards extends Component {
   constructor(props) {
@@ -26,6 +38,7 @@ export default class boards extends Component {
     this.state = {
       boards: [],
       newBoard: "",
+      popOpen: false,
     };
     this.key = `9cb0af8bad58725f09508dd5aace64a5`;
     this.token = `30b80c5d0950b7ee2663d550683fab28f2d67e1a6ccace739a7ba1e74113bdd9`;
@@ -61,6 +74,19 @@ export default class boards extends Component {
     this.setState({
       newBoard: e.target.value,
     });
+  };
+
+  deleteBoard = (id) => {
+    Axios.delete(
+      `https://api.trello.com/1/boards/${id}?key=${this.key}&token=${this.token}`
+    )
+      .then((response) => {
+        console.log(response);
+        this.getBoards();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   render() {
@@ -110,7 +136,12 @@ export default class boards extends Component {
           size="md"
           textAlign="left"
         >
-          <Box as={AiOutlineUser} mr={2} verticalAlign="text-bottom" display="inline"/>
+          <Box
+            as={AiOutlineUser}
+            mr={2}
+            verticalAlign="text-bottom"
+            display="inline"
+          />
           Personal Boards
         </Heading>
 
@@ -118,12 +149,14 @@ export default class boards extends Component {
           {this.state.boards.map((board) => {
             let path = `/board/${board.id}`;
             return (
-              <Link to={{
-                pathname: path,
-                state:{
-                  name: board.name,
-                }
-              }}>
+              <Link
+                to={{
+                  pathname: path,
+                  state: {
+                    name: board.name,
+                  },
+                }}
+              >
                 <PseudoBox
                   key={board.id}
                   as="button"
@@ -144,8 +177,47 @@ export default class boards extends Component {
                   mt={3}
                   bg="#0567a2"
                   _hover={{ bg: "#065a8e" }}
+                  position="relative"
                 >
                   {board.name}
+
+                  <Box onClick={(e) => e.preventDefault()}>
+                    <Popover placement="bottom-start" trigger="hover">
+                      <PopoverTrigger>
+                        <IconButton
+                          position="absolute"
+                          bottom={2}
+                          bg="transparent"
+                          right={1}
+                          icon="drag-handle"
+                          size="22px"
+                          color="#fff"
+                          _focus={{ bg: "transparent" }}
+                        />
+                      </PopoverTrigger>
+                      <PopoverContent zIndex={4}>
+                        <PopoverHeader
+                          fontSize={16}
+                          textAlign="center"
+                          fontWeight={300}
+                          color="#0567a2"
+                        >
+                          Delete Board?
+                        </PopoverHeader>
+                        <PopoverCloseButton />
+                        <PopoverFooter>
+                          <Button
+                            variantColor="red"
+                            w="100%"
+                            size="sm"
+                            onClick={() => this.deleteBoard(board.id)}
+                          >
+                            Delete
+                          </Button>
+                        </PopoverFooter>
+                      </PopoverContent>
+                    </Popover>
+                  </Box>
                 </PseudoBox>
               </Link>
             );
