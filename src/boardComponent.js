@@ -46,7 +46,6 @@ export class BoardComponent extends Component {
       .catch((err) => console.log(err));
   };
 
-
   handleBoardName = (e) => {
     this.setState({
       boardName: e.target.value,
@@ -109,11 +108,24 @@ export class BoardComponent extends Component {
     this.getlists();
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.match.params.boardId !== prevProps.match.params.boardId) {
+      this.setState({ boardName: this.props.location.state.name });
+      this.getlists();
+
+      // or any other logic..
+    }
+  }
+
   render() {
     // console.log(this.props.match.params);
     return (
       <React.Fragment>
-        <CardModal open={this.state.isOpen} close={this.onClose} cardId={this.state.selectedCardId}/>
+        <CardModal
+          open={this.state.isOpen}
+          close={this.onClose}
+          cardId={this.state.selectedCardId}
+        />
         <Box bg="#0079bf">
           <FormControl w="20%" h="100%" p={2}>
             <Input
@@ -144,8 +156,8 @@ export class BoardComponent extends Component {
                 // this.onOpen();
                 this.setState({
                   selectedCardId: cardId,
-                  isOpen:true,
-                })
+                  isOpen: true,
+                });
               }}
             ></List>
           ))}
