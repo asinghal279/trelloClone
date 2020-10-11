@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import axios from "axios";
 import {
   Stack,
   Box,
@@ -18,17 +17,13 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-  PopoverArrow,
   PopoverHeader,
-  PopoverBody,
   PopoverFooter,
   PopoverCloseButton,
-  Icon,
   IconButton,
-  Tooltip,
 } from "@chakra-ui/core";
 import { AiOutlineUser } from "react-icons/ai";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Axios from "axios";
 
 export default class boards extends Component {
@@ -39,31 +34,29 @@ export default class boards extends Component {
       boards: [],
       newBoard: "",
       popOpen: false,
+      isOpen: false,
     };
     this.key = `9cb0af8bad58725f09508dd5aace64a5`;
     this.token = `30b80c5d0950b7ee2663d550683fab28f2d67e1a6ccace739a7ba1e74113bdd9`;
   }
 
   getBoards = () => {
-    axios
-      .get(
-        `https://api.trello.com/1/members/me/boards?key=${this.key}&token=${this.token}`
-      )
+    Axios.get(
+      `https://api.trello.com/1/members/me/boards?key=${this.key}&token=${this.token}`
+    )
       .then((res) => {
         const boards = res.data;
         this.setState({ boards });
-        console.log(res.data);
       })
       .catch((err) => console.log(err));
   };
 
   submitNewBoard = (e) => {
     e.preventDefault();
-    axios
-      .post(
-        `https://api.trello.com/1/boards/?key=${this.key}&token=${this.token}&name=${this.state.newBoard}`
-      )
-      .then((res) => this.getBoards())
+    Axios.post(
+      `https://api.trello.com/1/boards/?key=${this.key}&token=${this.token}&name=${this.state.newBoard}`
+    )
+      .then(() => this.getBoards())
       .catch((err) => console.log(err));
   };
   componentDidMount() {
@@ -89,14 +82,17 @@ export default class boards extends Component {
       });
   };
 
+  onOpen = () => this.setState({ isOpen: true });
+  onClose = () => this.setState({ isOpen: false });
+
   render() {
     return (
       <Stack w="65%" mx="auto">
         <Modal
           bg="transparent"
           blockScrollOnMount={false}
-          isOpen={this.props.disclosure.isOpen}
-          onClose={this.props.disclosure.onClose}
+          isOpen={this.state.isOpen}
+          onClose={this.onClose}
         >
           <ModalOverlay />
           <ModalContent>
@@ -156,6 +152,7 @@ export default class boards extends Component {
                     name: board.name,
                   },
                 }}
+                key={board.id}
               >
                 <PseudoBox
                   key={board.id}
@@ -238,7 +235,7 @@ export default class boards extends Component {
             w={200}
             h={100}
             cursor="pointer"
-            onClick={this.props.disclosure.onOpen}
+            onClick={this.onOpen}
             color="#172b4d"
             bg="#f1f2f5"
             _hover={{ bg: "#e7e9ed" }}

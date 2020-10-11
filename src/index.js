@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import FuncComp from "./boardWrapper";
 import Header from "./header";
 import Board from "./boardComponent";
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
+import Boards from "./boards";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { ThemeProvider, CSSReset } from "@chakra-ui/core";
 
 ReactDOM.render(
@@ -13,7 +13,7 @@ ReactDOM.render(
       <Router>
         <Header />
         <Switch>
-          <Route component={FuncComp} exact path="/" />
+          <Route component={Boards} exact path="/" />
           <Route component={Board} path="/board/:boardId" />
         </Switch>
       </Router>

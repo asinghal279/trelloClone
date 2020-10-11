@@ -6,19 +6,17 @@ import {
   DrawerBody,
   DrawerCloseButton,
   DrawerContent,
-  DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
   Flex,
   Image,
-  Input,
   Stack,
 } from "@chakra-ui/core";
 import { AiOutlineHome } from "react-icons/ai";
 import { BsFillGrid3X3GapFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import Axios from "axios";
-import Logo from './trello-logo-blue.png';
+import Logo from "./trello-logo-blue.png";
 
 export class header extends Component {
   constructor(props) {
@@ -47,14 +45,13 @@ export class header extends Component {
       .then((res) => {
         const boards = res.data;
         this.setState({ boards });
-        console.log(res.data);
       })
       .catch((err) => console.log(err));
   };
 
   render() {
     return (
-      <Flex bg="#0567a2" px={2} justify="space-between" alignItems="center"> 
+      <Flex bg="#0567a2" px={2} justify="space-between" alignItems="center">
         <Box display="flex" alignItems="center">
           <Box
             bg="#ffffff4d"
@@ -83,7 +80,7 @@ export class header extends Component {
             bg="#ffffff4d"
             textAlign="center"
             color="white"
-            p="6px"
+            p="8px"
             borderRadius={5}
             mx="2px"
             my="2px"
@@ -115,6 +112,7 @@ export class header extends Component {
                           name: board.name,
                         },
                       }}
+                      key = {board.id}
                     >
                       <Button w="100%" my={3}>
                         {board.name}
@@ -126,10 +124,19 @@ export class header extends Component {
             </DrawerBody>
           </DrawerContent>
         </Drawer>
-        <Box size="xs" w="100%" h="100%" display="flex" justifyContent="center" alignItems="center">
+        <Box
+          size="xs"
+          w="100%"
+          h="100%"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
           <Image src={Logo} w="100px" alt="Segun Adebayo" />
         </Box>
-        <Box borderRadius="33px" bg="#2ea3bf" p="10px" m="4px">RS</Box>
+        <Box borderRadius="33px" bg="#2ea3bf" p="10px" m="4px">
+          RS
+        </Box>
       </Flex>
     );
   }

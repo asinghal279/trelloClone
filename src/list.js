@@ -10,9 +10,7 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-  PopoverArrow,
   PopoverHeader,
-  PopoverBody,
   PopoverFooter,
   PopoverCloseButton,
   Flex,
@@ -29,7 +27,6 @@ class List extends Component {
       listName: this.props.name,
       listDisabled: true,
       showAddCardForm: false,
-      showAddCardButton: true,
       newCard: "",
     };
     this.key = `9cb0af8bad58725f09508dd5aace64a5`;
@@ -43,7 +40,6 @@ class List extends Component {
       .then((res) => {
         const cards = res.data;
         this.setState({ cards });
-        console.log(res.data);
       })
       .catch((err) => console.log(err));
   };
@@ -64,13 +60,9 @@ class List extends Component {
       {
         name: this.state.listName,
       }
-    )
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    ).catch((err) => {
+      console.log(err);
+    });
   };
 
   submitNewCard = (e) => {
@@ -81,10 +73,8 @@ class List extends Component {
         name: this.state.newCard,
       }
     )
-      .then((response) => {
-        console.log(response);
+      .then(() => {
         this.setState({
-          showAddCardButton: true,
           showAddCardForm: false,
           newCard: "",
         });
@@ -95,6 +85,12 @@ class List extends Component {
       });
   };
 
+  componentDidUpdate(prevProps, prevState){
+    if(prevState.cards != this.state.cards){
+      this.getCards();
+    }
+  }
+
   archiveList = () => {
     Axios.put(
       `https://api.trello.com/1/lists/${this.props.id}/closed?key=${this.key}&token=${this.token}`,
@@ -102,9 +98,8 @@ class List extends Component {
         value: true,
       }
     )
-      .then((response) => {
+      .then(() => {
         this.props.getLists();
-        console.log(response);
       })
       .catch((err) => {
         console.log(err);
@@ -181,7 +176,6 @@ class List extends Component {
               boxShadow="0 1px 0 rgba(9,30,66,.25)"
               cursor="pointer"
               onClick={() => {
-                console.log(card.id);
                 this.props.openModal(card.id);
               }}
             >
@@ -230,7 +224,6 @@ class List extends Component {
                 size="sm"
                 onClick={() => {
                   this.setState({
-                    showAddCardButton: true,
                     showAddCardForm: false,
                   });
                 }}
@@ -247,9 +240,9 @@ class List extends Component {
           color="#747f94"
           textAlign="left"
           onClick={() => {
-            this.setState({ showAddCardForm: true, showAddCardButton: false });
+            this.setState({ showAddCardForm: true });
           }}
-          display={this.state.showAddCardButton ? "block" : "none"}
+          display={this.state.showAddCardForm ? "none" : "block"}
         >
           + Add a card
         </Button>

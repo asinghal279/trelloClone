@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import "./card.css";
 import {
   Modal,
   ModalOverlay,
@@ -33,7 +32,7 @@ import {
   PopoverCloseButton,
   FormLabel,
 } from "@chakra-ui/core";
-import { BsWindow, BsCardText } from "react-icons/bs";
+import { BsWindow, BsCardText, BsCheckBox } from "react-icons/bs";
 import Axios from "axios";
 
 class cardModal extends Component {
@@ -64,7 +63,6 @@ class cardModal extends Component {
           name: card.name,
           description: card.desc,
         });
-        console.log(res.data);
       })
       .catch((err) => console.log(err));
   };
@@ -78,7 +76,6 @@ class cardModal extends Component {
         this.setState({
           checklists,
         });
-        console.log(res.data);
       })
       .catch((err) => console.log(err));
   };
@@ -93,7 +90,7 @@ class cardModal extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.props.open !== prevProps.open) {
+    if (this.props.open !== prevProps.open && prevProps.open !== true) {
       this.getCard();
       this.getChecklists();
     }
@@ -114,8 +111,8 @@ class cardModal extends Component {
         desc: this.state.description,
       }
     )
-      .then((response) => {
-        console.log(response);
+      .then(() => {
+        this.props.getCards();
       })
       .catch((err) => {
         console.log(err);
@@ -128,7 +125,6 @@ class cardModal extends Component {
       `https://api.trello.com/1/checklists/${this.state.currentChecklistId}/checkItems?key=${this.key}&token=${this.token}&name=${this.state.newChecklistItem}`
     )
       .then((response) => {
-        console.log(response);
         this.getChecklists();
         this.setState({
           newChecklistItem: "",
@@ -145,7 +141,6 @@ class cardModal extends Component {
       `https://api.trello.com/1/checklists/${checklistId}?key=${this.key}&token=${this.token}`
     )
       .then((response) => {
-        console.log(response);
         this.getChecklists();
         this.setState({
           newChecklistItem: "",
@@ -162,7 +157,6 @@ class cardModal extends Component {
       `https://api.trello.com/1/checklists/${checklistId}/checkItems/${itemId}?key=${this.key}&token=${this.token}`
     )
       .then((response) => {
-        console.log(response);
         this.getChecklists();
         this.setState({
           newChecklistItem: "",
@@ -180,7 +174,7 @@ class cardModal extends Component {
         state: state,
       }
     )
-      .then((response) => {
+      .then(() => {
         this.getChecklists();
       })
       .catch((err) => {
@@ -197,7 +191,6 @@ class cardModal extends Component {
       }
     )
       .then((response) => {
-        console.log(response);
         this.getChecklists();
         this.setState({
           newChecklistItem: "",
@@ -213,19 +206,18 @@ class cardModal extends Component {
     Axios.delete(
       `https://api.trello.com/1/cards/${this.props.cardId}?key=${this.key}&token=${this.token}`
     )
-      .then((response) => {
-        console.log(response);
-        this.props.getLists();
+      .then(() => {
+        this.props.close();
         this.setState({
-          open: false,
           newChecklistItem: "",
         });
+        this.props.getCards();
       })
       .catch((err) => {
         console.log(err);
       });
   };
-
+  onClose = () => this.setState({ isOpen: false });
   render() {
     return (
       <Modal
@@ -343,9 +335,9 @@ class cardModal extends Component {
                 </Button>
                 <Stack id="checklistContainer" mt={5} spacing={4}>
                   {this.state.checklists.map((checklist) => (
-                    <Box name="checklist">
+                    <Box name="checklist" key={checklist.id}>
                       <Flex justify="space-between">
-                        <Icon name="check" size="24px" />
+                        <Icon as={BsCheckBox} size="28px" />
                         <Text>{checklist.name}</Text>
                         <Popover placement="bottom-start">
                           <PopoverTrigger>

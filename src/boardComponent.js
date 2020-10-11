@@ -32,7 +32,10 @@ export class BoardComponent extends Component {
   }
 
   onOpen = () => this.setState({ isOpen: true });
-  onClose = () => this.setState({ isOpen: false });
+  onClose = () => {
+    this.setState({ isOpen: false });
+    this.child.getCards();
+  };
 
   getlists = () => {
     Axios.get(
@@ -41,7 +44,6 @@ export class BoardComponent extends Component {
       .then((res) => {
         const lists = res.data;
         this.setState({ lists });
-        console.log(res.data);
       })
       .catch((err) => console.log(err));
   };
@@ -74,9 +76,7 @@ export class BoardComponent extends Component {
         name: this.state.boardName,
       }
     )
-      .then((response) => {
-        console.log(response);
-      })
+      .then(() => {})
       .catch((err) => {
         console.log(err);
       });
@@ -91,7 +91,6 @@ export class BoardComponent extends Component {
       }
     )
       .then((response) => {
-        console.log(response);
         this.setState({
           showAddCardButton: true,
           showAddCardForm: false,
@@ -116,14 +115,13 @@ export class BoardComponent extends Component {
   }
 
   render() {
-    // console.log(this.props.match.params);
     return (
       <React.Fragment>
         <CardModal
           open={this.state.isOpen}
           close={this.onClose}
           cardId={this.state.selectedCardId}
-          getLists = {() => this.getlists()}
+          getCards={() => this.child.getCards()}
         />
         <Box bg="#0079bf">
           <FormControl w="20%" h="100%" p={2}>
@@ -158,7 +156,9 @@ export class BoardComponent extends Component {
                   isOpen: true,
                 });
               }}
-              getLists={() => this.getlists()}
+              ref={(instance) => {
+                this.child = instance
+              }}
             ></List>
           ))}
           <form onSubmit={this.submitNewList}>
