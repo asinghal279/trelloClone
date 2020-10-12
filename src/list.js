@@ -85,11 +85,11 @@ class List extends Component {
       });
   };
 
-  componentDidUpdate(prevProps, prevState){
-    if(prevState.cards != this.state.cards){
-      this.getCards();
-    }
-  }
+  // componentDidUpdate(prevProps, prevState){
+  //   if(prevState.cards != this.state.cards){
+  //     this.getCards();
+  //   }
+  // }
 
   archiveList = () => {
     Axios.put(
