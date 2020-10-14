@@ -42,7 +42,7 @@ export class BoardComponent extends Component {
       `https://api.trello.com/1/boards/${this.props.match.params.boardId}/lists?key=${this.key}&token=${this.token}`
     )
       .then((res) => {
-        const lists = res.data;
+        const lists = res.data.filter(list => !list.closed);
         this.setState({ lists });
       })
       .catch((err) => console.log(err));
@@ -92,11 +92,11 @@ export class BoardComponent extends Component {
     )
       .then((response) => {
         this.setState({
+          lists: [...this.state.lists, response.data],
           showAddCardButton: true,
           showAddCardForm: false,
           newListName: "",
         });
-        this.getlists();
       })
       .catch((err) => {
         console.log(err);
@@ -149,15 +149,15 @@ export class BoardComponent extends Component {
               key={list.id}
               id={list.id}
               name={list.name}
+              getLists={this.getlists}
               openModal={(cardId) => {
-                // this.onOpen();
                 this.setState({
                   selectedCardId: cardId,
                   isOpen: true,
                 });
               }}
               ref={(instance) => {
-                this.child = instance
+                this.child = instance;
               }}
             ></List>
           ))}

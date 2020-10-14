@@ -73,23 +73,17 @@ class List extends Component {
         name: this.state.newCard,
       }
     )
-      .then(() => {
+      .then((response) => {
         this.setState({
+          cards: [...this.state.cards, response.data],
           showAddCardForm: false,
           newCard: "",
         });
-        this.getCards();
       })
       .catch((err) => {
         console.log(err);
       });
   };
-
-  // componentDidUpdate(prevProps, prevState){
-  //   if(prevState.cards != this.state.cards){
-  //     this.getCards();
-  //   }
-  // }
 
   archiveList = () => {
     Axios.put(

@@ -56,7 +56,12 @@ export default class boards extends Component {
     Axios.post(
       `https://api.trello.com/1/boards/?key=${this.key}&token=${this.token}&name=${this.state.newBoard}`
     )
-      .then(() => this.getBoards())
+      .then((response) => {
+        console.log(response);
+        this.setState({
+          boards: [...this.state.boards, response.data],
+        });
+      })
       .catch((err) => console.log(err));
   };
   componentDidMount() {
