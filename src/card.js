@@ -45,6 +45,7 @@ class cardModal extends Component {
       showAddDescriptionForm: false,
       description: "",
       checklists: [],
+      checkItems: [],
       newChecklistItem: "",
       showAddChecklistItemForm: false,
       addChecklist: "",
@@ -140,9 +141,11 @@ class cardModal extends Component {
     Axios.delete(
       `https://api.trello.com/1/checklists/${checklistId}?key=${this.key}&token=${this.token}`
     )
-      .then((response) => {
-        this.getChecklists();
+      .then(() => {
         this.setState({
+          checklists: this.state.checklists.filter(
+            (checklist) => checklist.id != this.state.currentDeletingChecklistId
+          ),
           newChecklistItem: "",
           showAddChecklistItemForm: false,
         });
@@ -156,11 +159,11 @@ class cardModal extends Component {
     Axios.delete(
       `https://api.trello.com/1/checklists/${checklistId}/checkItems/${itemId}?key=${this.key}&token=${this.token}`
     )
-      .then((response) => {
-        this.getChecklists();
+      .then(() => {
         this.setState({
           newChecklistItem: "",
         });
+        this.getChecklists();
       })
       .catch((err) => {
         console.log(err);
@@ -341,7 +344,15 @@ class cardModal extends Component {
                         <Text>{checklist.name}</Text>
                         <Popover placement="bottom-start">
                           <PopoverTrigger>
-                            <Button bg="rgb(9 30 66 / 4%)" size="xs">
+                            <Button
+                              bg="rgb(9 30 66 / 4%)"
+                              size="xs"
+                              onClick={() =>
+                                this.setState({
+                                  currentDeletingChecklistId: checklist.id,
+                                })
+                              }
+                            >
                               Delete
                             </Button>
                           </PopoverTrigger>
