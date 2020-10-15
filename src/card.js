@@ -194,8 +194,8 @@ class cardModal extends Component {
       }
     )
       .then((response) => {
-        this.getChecklists();
         this.setState({
+          checklists: [...this.state.checklists, response.data],
           newChecklistItem: "",
           addChecklist: "",
         });

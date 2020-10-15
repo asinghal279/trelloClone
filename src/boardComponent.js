@@ -22,7 +22,6 @@ export class BoardComponent extends Component {
       lists: [],
       disabled: true,
       showAddListForm: false,
-      showAddListButton: true,
       newListName: "",
       isOpen: false,
       selectedCardId: "",
@@ -203,7 +202,6 @@ export class BoardComponent extends Component {
                   size="sm"
                   onClick={() => {
                     this.setState({
-                      showAddListButton: true,
                       showAddListForm: false,
                     });
                   }}
@@ -222,10 +220,9 @@ export class BoardComponent extends Component {
               onClick={() => {
                 this.setState({
                   showAddListForm: true,
-                  showAddListButton: false,
                 });
               }}
-              display={this.state.showAddListButton ? "block" : "none"}
+              display={this.state.showAddListForm ? "none" : "block"}
             >
               + Add a list
             </Button>
